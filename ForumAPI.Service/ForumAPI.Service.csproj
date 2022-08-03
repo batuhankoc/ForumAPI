@@ -7,8 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Abstract\" />
-    <Folder Include="Concrete\" />
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ForumAPI.Contract\ForumAPI.Contract.csproj" />
+    <ProjectReference Include="..\ForumAPI.Entity\ForumAPI.Data.csproj" />
   </ItemGroup>
 
 </Project>
