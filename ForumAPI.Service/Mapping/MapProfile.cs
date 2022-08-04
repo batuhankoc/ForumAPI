@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ForumAPI.Contract.UserContract;
+using ForumAPI.Data.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,10 @@ namespace ForumAPI.Service.Mapping
 {
     public class MapProfile : Profile
     {
+        public MapProfile()
+        {
+            CreateMap<AddUserContract, User>().ReverseMap();
+        }
         
     }
 }
