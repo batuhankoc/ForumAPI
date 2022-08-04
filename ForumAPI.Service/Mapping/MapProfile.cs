@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ForumAPI.Contract.QuestionContract;
 using ForumAPI.Contract.UserContract;
 using ForumAPI.Data.Entity;
 using System;

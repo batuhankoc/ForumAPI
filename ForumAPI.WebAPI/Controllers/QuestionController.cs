@@ -1,7 +1,9 @@
-﻿using ForumAPI.Contract.UserContract;
+﻿using ForumAPI.Contract.QuestionContract;
+using ForumAPI.Contract.ResponseContract;
 using ForumAPI.Service.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace ForumAPI.WebAPI.Controllers
 {
@@ -20,7 +22,9 @@ namespace ForumAPI.WebAPI.Controllers
         public async Task<IActionResult> AddQuestion(AddQuestionContract addQuestionContract)
         {
             await _questionService.AddQuestionAsync(addQuestionContract);
-            return Ok();
+            return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK)); // null yerine addQuestionContract yazılabilir diye düşündük
         }
     }
-}
+
+
+   }

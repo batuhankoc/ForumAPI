@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ForumAPI.Contract.UserContract
+namespace ForumAPI.Contract.QuestionContract
 {
     public class AddQuestionContract
     {
