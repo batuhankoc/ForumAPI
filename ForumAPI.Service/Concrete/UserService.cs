@@ -16,8 +16,7 @@ namespace ForumAPI.Service.Concrete
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-
-        public UserService(IUserRepository userRepository , IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -25,8 +24,19 @@ namespace ForumAPI.Service.Concrete
 
         public async Task AddUserAsync(AddUserContract user)
         {
-            var addUser= _mapper.Map<User>(user);
+            var addUser = _mapper.Map<User>(user);
+
+            var emailValid = await _userRepository.GetUserByEmail(user.Email);
+
+            if (emailValid != null)
+            {
+                throw new Exception("Kullanıcı kayıtlı");
+            }
+
             await _userRepository.AddAsync(addUser);
         }
+
     }
+
 }
+

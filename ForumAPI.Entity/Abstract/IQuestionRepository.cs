@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace ForumAPI.Data.Abstract
 {
-    public interface IUserRepository : IGenericRepository<User>
+    public interface IQuestionRepository : IGenericRepository<Question> 
     {
-        Task<User> GetUserByEmail(string email);
+        //
     }
 }
