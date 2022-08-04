@@ -1,4 +1,5 @@
-﻿using ForumAPI.Contract.UserContract;
+﻿using AutoMapper;
+using ForumAPI.Contract.UserContract;
 using ForumAPI.Data.Abstract;
 using ForumAPI.Data.Entity;
 using ForumAPI.Service.Abstract;
@@ -13,17 +14,19 @@ namespace ForumAPI.Service.Concrete
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository , IMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         public async Task AddUserAsync(AddUserContract user)
         {
-            var editUser = new User() {Email = "forum@gmail.com", Location = "Ankara", Password = "000", Name = "ForumApi", Surname = "Deneme"}; 
-            await _userRepository.AddAsync(editUser);
+            var addUser= _mapper.Map<User>(user);
+            await _userRepository.AddAsync(addUser);
         }
     }
 }
