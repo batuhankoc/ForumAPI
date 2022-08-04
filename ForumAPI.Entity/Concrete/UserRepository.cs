@@ -14,7 +14,14 @@ namespace ForumAPI.Data.Concrete
         private readonly DbSet<User> _dbSet;
         public UserRepository(DataContext context) : base(context)
         {
-           _dbSet = context.Set<User>();  
+            _dbSet = context.Set<User>();
         }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _dbSet.FirstOrDefaultAsync(h => h.Email == email);
+        }
+
+
     }
 }

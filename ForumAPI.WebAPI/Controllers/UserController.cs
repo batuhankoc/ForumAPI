@@ -10,11 +10,13 @@ namespace ForumAPI.WebAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _service;
+
         public UserController(IUserService service)
         {
             _service = service;
         }
-        [HttpPost]
+
+        [HttpPost("[action]")]
         public async Task<IActionResult> AddUser(AddUserContract user)
         {
             await _service.AddUserAsync(user);

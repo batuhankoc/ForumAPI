@@ -39,10 +39,12 @@ namespace ForumAPI.Data.Entity
                 entity.ToTable("Answer");
 
                 entity.Property(e => e.Content)
-                    .HasMaxLength(50)
+                    .HasMaxLength(1000)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+                entity.Property(e => e.CreatedTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
 
@@ -63,7 +65,9 @@ namespace ForumAPI.Data.Entity
             {
                 entity.ToTable("Favorite");
 
-                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+                entity.Property(e => e.CreatedTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Question)
                     .WithMany(p => p.Favorites)
@@ -87,13 +91,15 @@ namespace ForumAPI.Data.Entity
                     .IsUnicode(false);
 
                 entity.Property(e => e.Content)
-                    .HasMaxLength(50)
+                    .HasMaxLength(1000)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+                entity.Property(e => e.CreatedTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Title)
-                    .HasMaxLength(50)
+                    .HasMaxLength(1000)
                     .IsUnicode(false);
 
                 entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
@@ -109,7 +115,9 @@ namespace ForumAPI.Data.Entity
             {
                 entity.ToTable("QuestionView");
 
-                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+                entity.Property(e => e.CreatedTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Question)
                     .WithMany(p => p.QuestionViews)
@@ -133,6 +141,8 @@ namespace ForumAPI.Data.Entity
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Email).HasMaxLength(50);
+
+                entity.Property(e => e.Image).IsUnicode(false);
 
                 entity.Property(e => e.Location).HasMaxLength(50);
 

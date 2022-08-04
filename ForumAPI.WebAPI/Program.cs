@@ -27,7 +27,9 @@ x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IQuestionRepository, QuestionRepository>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IQuestionService, QuestionService>();
 builder.Services.AddAutoMapper(typeof(MapProfile));
 
 
