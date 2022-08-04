@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace ForumAPI.Data.Entity
 {
     public partial class User
     {
-        
-        [Key]
+        public User()
+        {
+            Answers = new HashSet<Answer>();
+            Favorites = new HashSet<Favorite>();
+            QuestionViews = new HashSet<QuestionView>();
+            Questions = new HashSet<Question>();
+            Votes = new HashSet<Vote>();
+        }
+
         public int Id { get; set; }
-        public string UserName { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public string Surname { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
         public DateTime CreatedTime { get; set; }

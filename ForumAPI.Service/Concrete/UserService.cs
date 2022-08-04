@@ -22,7 +22,7 @@ namespace ForumAPI.Service.Concrete
 
         public async Task AddUserAsync(AddUserContract user)
         {
-            var editUser = new User() {Email = "forum@gmail.com", Location = "Ankara", Password = "000", UserName = "ForumApi"}; 
+            var editUser = new User() {Email = "forum@gmail.com", Location = "Ankara", Password = "000", Name = "ForumApi", Surname = "Deneme"}; 
             await _userRepository.AddAsync(editUser);
         }
     }
