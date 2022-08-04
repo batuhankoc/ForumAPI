@@ -1,4 +1,4 @@
-﻿using ForumAPI.Contract.UserContract;
+﻿using ForumAPI.Contract.QuestionContract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
