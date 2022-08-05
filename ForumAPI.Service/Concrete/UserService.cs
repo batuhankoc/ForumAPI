@@ -3,6 +3,7 @@ using ForumAPI.Contract.UserContract;
 using ForumAPI.Data.Abstract;
 using ForumAPI.Data.Entity;
 using ForumAPI.Service.Abstract;
+using ForumAPI.Service.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace ForumAPI.Service.Concrete
 
             if (emailValid != null)
             {
-                throw new Exception("Kullanıcı kayıtlı");
+                throw new ClientSideException("This email has found");
             }
 
             await _userRepository.AddAsync(addUser);

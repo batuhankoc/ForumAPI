@@ -1,7 +1,9 @@
-﻿using ForumAPI.Contract.UserContract;
+﻿using ForumAPI.Contract.ResponseContract;
+using ForumAPI.Contract.UserContract;
 using ForumAPI.Service.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace ForumAPI.WebAPI.Controllers
 {
@@ -20,7 +22,7 @@ namespace ForumAPI.WebAPI.Controllers
         public async Task<IActionResult> AddUser(AddUserContract user)
         {
             await _service.AddUserAsync(user);
-            return Ok();
+            return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK));
         }
     }
 }

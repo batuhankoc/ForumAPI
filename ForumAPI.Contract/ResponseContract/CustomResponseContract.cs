@@ -23,19 +23,5 @@ namespace ForumAPI.Contract.ResponseContract
         {
             return new CustomResponseContract { Result = result, StatusCode = statusCode, Messages = "İşlem başarısız", Error = true };
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
