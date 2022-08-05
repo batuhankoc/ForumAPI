@@ -18,10 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Middleware\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ForumAPI.Service\ForumAPI.Service.csproj" />
     <ProjectReference Include="..\ForumAPI.Validation\ForumAPI.Validation.csproj" />
   </ItemGroup>

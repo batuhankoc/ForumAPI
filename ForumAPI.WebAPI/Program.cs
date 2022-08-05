@@ -6,6 +6,7 @@ using ForumAPI.Service.Abstract;
 using ForumAPI.Service.Concrete;
 using ForumAPI.Service.Mapping;
 using ForumAPI.Validation.FluentValidation;
+using ForumAPI.WebAPI.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +45,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCustomException();
 
 app.UseAuthorization();
 

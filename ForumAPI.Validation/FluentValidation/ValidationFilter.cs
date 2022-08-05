@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ForumAPI.Contract.ResponseContract;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,12 +21,12 @@ namespace ForumAPI.Validation.FluentValidation
                     Where(p => p.Value.ValidationState == ModelValidationState.Invalid).
                     ToDictionary(p => p.Key, p => p.Value.Errors.Select(e => e.ErrorMessage)).ToArray();
             
-                context.Result = new BadRequestObjectResult(errors);
+                context.Result = new BadRequestObjectResult(CustomResponseContract.Fail(errors, HttpStatusCode.NotAcceptable));
                 return;
-
      
             }
             await next();
+
         }
     }
 }
