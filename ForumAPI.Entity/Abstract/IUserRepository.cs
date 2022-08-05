@@ -10,5 +10,6 @@ namespace ForumAPI.Data.Abstract
     public interface IUserRepository : IGenericRepository<User>
     {
         Task<User> GetUserByEmail(string email);
+        Task<User> Login(string email, string password);
     }
 }
