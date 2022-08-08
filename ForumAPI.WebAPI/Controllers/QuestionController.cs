@@ -32,8 +32,6 @@ namespace ForumAPI.WebAPI.Controllers
             return Ok(CustomResponseContract.Success(questions, HttpStatusCode.OK));
         }
 
-    }
-
         [HttpPost("[action]")]
         public async Task<IActionResult> AddQuestionToFav(AddQuestionToFavContract addQuestionToFavContract)
         {
