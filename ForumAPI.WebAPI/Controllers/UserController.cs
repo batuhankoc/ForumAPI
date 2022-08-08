@@ -1,8 +1,11 @@
-﻿using ForumAPI.Contract.ResponseContract;
+﻿using FluentValidation.Results;
+using ForumAPI.Contract.ResponseContract;
 using ForumAPI.Contract.UserContract;
 using ForumAPI.Service.Abstract;
+using ForumAPI.Validation.FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Net;
 
 namespace ForumAPI.WebAPI.Controllers
