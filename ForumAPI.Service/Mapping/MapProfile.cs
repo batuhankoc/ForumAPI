@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ForumAPI.Contract.LoginContract;
 using ForumAPI.Contract.QuestionContract;
 using ForumAPI.Contract.UserContract;
 using ForumAPI.Data.Entity;
@@ -16,6 +17,7 @@ namespace ForumAPI.Service.Mapping
         {
             CreateMap<AddUserContract, User>().ReverseMap();
             CreateMap<AddQuestionContract, Question>().ReverseMap();
+            CreateMap<User, UserLoginContract>().ReverseMap();
             CreateMap<AddQuestionToFavContract, Favorite>().ReverseMap();
 
         }

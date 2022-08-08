@@ -1,4 +1,4 @@
-﻿using FluentValidation.Results;
+﻿using ForumAPI.Contract.LoginContract;
 using ForumAPI.Contract.ResponseContract;
 using ForumAPI.Contract.UserContract;
 using ForumAPI.Service.Abstract;
@@ -27,5 +27,13 @@ namespace ForumAPI.WebAPI.Controllers
             await _service.AddUserAsync(user);
             return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK));
         }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Login(UserLoginContract login)
+        {
+            await _service.LoginAsync(login);
+            return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK));
+        }
+
     }
 }

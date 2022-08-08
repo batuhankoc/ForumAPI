@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ForumAPI.Contract.LoginContract;
 using ForumAPI.Contract.UserContract;
 using ForumAPI.Data.Abstract;
 using ForumAPI.Data.Entity;
@@ -37,6 +38,16 @@ namespace ForumAPI.Service.Concrete
             await _userRepository.AddAsync(addUser);
         }
 
+        public async Task<User> LoginAsync(UserLoginContract login)
+        {
+            var loginmapp = _mapper.Map<User>(login);
+            var isLoginValid = await _userRepository.Login(login.Email, login.Password);
+            if (isLoginValid == null)
+            {
+                throw new ClientSideException("Wrong password or email");
+            }
+            return loginmapp;
+        }
     }
 
 }

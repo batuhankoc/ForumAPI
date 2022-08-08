@@ -22,6 +22,10 @@ namespace ForumAPI.Data.Concrete
             return await _dbSet.FirstOrDefaultAsync(h => h.Email == email);
         }
 
+        public async Task<User> Login(string email, string password)
+        {
+            return await _dbSet.FirstOrDefaultAsync(h => h.Email == email && h.Password == password);
+        }
 
     }
 }

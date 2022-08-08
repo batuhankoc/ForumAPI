@@ -1,4 +1,6 @@
-﻿using ForumAPI.Contract.UserContract;
+﻿using ForumAPI.Contract.LoginContract;
+using ForumAPI.Contract.UserContract;
+using ForumAPI.Data.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +12,6 @@ namespace ForumAPI.Service.Abstract
     public interface IUserService
     {
         Task AddUserAsync(AddUserContract user);
+        Task<User> LoginAsync(UserLoginContract login);
     }
 }
