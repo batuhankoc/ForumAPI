@@ -27,5 +27,11 @@ namespace ForumAPI.Service.Concrete
             var addQuestion = _mapper.Map<Question>(addQuestionContract);
             await _questionRepository.AddAsync(addQuestion);
         }
+
+        public async Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails()
+        {
+            var questions = await _questionRepository.GetAllQuestionsWithDetails();
+            return questions.OrderByDescending(x => x.CreatedDateTime).ToList();
+        }
     }
 }

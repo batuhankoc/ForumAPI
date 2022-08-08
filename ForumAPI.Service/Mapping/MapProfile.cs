@@ -18,6 +18,7 @@ namespace ForumAPI.Service.Mapping
             CreateMap<AddUserContract, User>().ReverseMap();
             CreateMap<AddQuestionContract, Question>().ReverseMap();
             CreateMap<User, UserLoginContract>().ReverseMap();
+            CreateMap<Question, GetAllQuestionsContract>().ReverseMap();
         }
         
     }
