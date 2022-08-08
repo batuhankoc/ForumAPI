@@ -28,11 +28,20 @@ builder.Services.AddDbContext<DataContext>(x =>
 x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+
 builder.Services.AddTransient<IQuestionRepository, QuestionRepository>();
+
+builder.Services.AddTransient<IAnswerRepository, AnswerRepository>();
+
 builder.Services.AddTransient<IFavoriteRepository, FavoriteRepository>();
 builder.Services.AddTransient<IUserService, UserService>();
+
 builder.Services.AddTransient<IQuestionService, QuestionService>();
+
+builder.Services.AddTransient<IAnswerService, AnswerService>();
+
 builder.Services.AddAutoMapper(typeof(MapProfile));
 
 
