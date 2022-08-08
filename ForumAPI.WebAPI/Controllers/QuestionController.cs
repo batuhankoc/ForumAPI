@@ -25,6 +25,12 @@ namespace ForumAPI.WebAPI.Controllers
             await _questionService.AddQuestionAsync(addQuestionContract);
             return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK)); // null yerine addQuestionContract yazılabilir diye düşündük
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetAllQuestionsWithDetails()
+        {
+            var questions = await _questionService.GetAllQuestionsWithDetails();
+            return Ok(CustomResponseContract.Success(questions, HttpStatusCode.OK));
+        }
 
         [HttpPost("[action]")]
         public async Task<IActionResult> AddQuestionToFav(AddQuestionToFavContract addQuestionToFavContract)

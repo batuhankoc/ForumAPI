@@ -1,4 +1,5 @@
-﻿using ForumAPI.Data.Entity;
+﻿using ForumAPI.Contract.QuestionContract;
+using ForumAPI.Data.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,6 @@ namespace ForumAPI.Data.Abstract
 {
     public interface IQuestionRepository : IGenericRepository<Question> 
     {
+        Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails();
     }
 }

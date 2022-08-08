@@ -57,6 +57,12 @@ namespace ForumAPI.Service.Concrete
 
             var model = _mapper.Map<Favorite>(addQuestionToFavContract);
             await _favoriteRepository.AddAsync(model);
+        }  
+
+        public async Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails()
+        {
+            var questions = await _questionRepository.GetAllQuestionsWithDetails();
+            return questions.OrderByDescending(x => x.CreatedDateTime).ToList();
         }
-    }    
+    }
 }

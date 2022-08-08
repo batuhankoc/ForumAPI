@@ -20,6 +20,7 @@ namespace ForumAPI.Service.Mapping
             CreateMap<User, UserLoginContract>().ReverseMap();
             CreateMap<AddQuestionToFavContract, Favorite>().ReverseMap();
 
+            CreateMap<Question, GetAllQuestionsContract>().ReverseMap();
         }
 
     }

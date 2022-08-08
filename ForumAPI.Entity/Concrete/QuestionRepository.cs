@@ -1,4 +1,5 @@
-﻿using ForumAPI.Data.Abstract;
+﻿using ForumAPI.Contract.QuestionContract;
+using ForumAPI.Data.Abstract;
 using ForumAPI.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,5 +18,27 @@ namespace ForumAPI.Data.Concrete
             _dbSet = context.Set<Question>();
         }
 
+        public async Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails()
+        {
+
+            var allQuestions =  await _dbSet.AsNoTracking().Select(p => new GetAllQuestionsContract
+            {
+                Title = p.Title,
+                View = p.QuestionViews.Count(),
+                Content = p.Content,
+                Category = p.Category,
+                Answer = p.Answers.Count(),
+                Vote = p.Votes.Where(y => y.Vote1 == true).Count() - p.Votes.Where(z => z.Vote1 == false).Count(),
+                User = new Contract.UserContract.UserResponseContract {
+                    Name = p.User.Name,
+                    Id = p.User.Id,
+                    Surname = p.User.Surname,
+                    Image = p.User.Image
+                }
+            }).ToListAsync();
+
+            return allQuestions;
+        }
     }
+
 }

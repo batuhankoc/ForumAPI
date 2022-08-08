@@ -11,6 +11,7 @@ namespace ForumAPI.Service.Abstract
     public interface IQuestionService
     {
         Task AddQuestionAsync(AddQuestionContract addQuestionContract);
+        Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails();
         Task AddQuestionToFavAsync(AddQuestionToFavContract addQuestionToFavContract);
     }
 }
