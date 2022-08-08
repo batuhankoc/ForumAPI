@@ -1,4 +1,5 @@
 ﻿using ForumAPI.Contract.QuestionContract;
+using ForumAPI.Data.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace ForumAPI.Service.Abstract
     public interface IQuestionService
     {
         Task AddQuestionAsync(AddQuestionContract addQuestionContract);
+        Task AddQuestionToFavAsync(AddQuestionToFavContract addQuestionToFavContract);
     }
 }

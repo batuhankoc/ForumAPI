@@ -16,5 +16,6 @@ namespace ForumAPI.Data.Concrete
         {
             _dbSet = context.Set<Question>();
         }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using ForumAPI.Contract.QuestionContract;
+﻿using FluentValidation.Results;
+using ForumAPI.Contract.QuestionContract;
 using ForumAPI.Contract.ResponseContract;
 using ForumAPI.Service.Abstract;
 using Microsoft.AspNetCore.Http;
@@ -24,7 +25,13 @@ namespace ForumAPI.WebAPI.Controllers
             await _questionService.AddQuestionAsync(addQuestionContract);
             return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK)); // null yerine addQuestionContract yazılabilir diye düşündük
         }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> AddQuestionToFav(AddQuestionToFavContract addQuestionToFavContract)
+        {
+           
+            await _questionService.AddQuestionToFavAsync(addQuestionToFavContract);
+            return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK));
+        }
     }
-
-
-   }
+}

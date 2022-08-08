@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace ForumAPI.Data.Abstract
 {
-    public interface IQuestionRepository : IGenericRepository<Question> 
+    public interface IFavoriteRepository : IGenericRepository<Favorite>
     {
+        Task<bool> CheckFavorite( int questionId , int userId);
     }
 }
