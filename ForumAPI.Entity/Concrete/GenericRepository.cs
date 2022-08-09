@@ -29,7 +29,7 @@ namespace ForumAPI.Data.Concrete
 
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression)
         {
-            //return await _dbSet.FindAsync();
+            
            return await Task.FromResult(_dbSet.Where(expression));
 
         }

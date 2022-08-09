@@ -157,8 +157,6 @@ namespace ForumAPI.Data.Entity
             {
                 entity.ToTable("Vote");
 
-                entity.Property(e => e.Vote1).HasColumnName("Vote");
-
                 entity.HasOne(d => d.Question)
                     .WithMany(p => p.Votes)
                     .HasForeignKey(d => d.QuestionId)

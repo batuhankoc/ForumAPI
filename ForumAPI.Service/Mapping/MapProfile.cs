@@ -3,6 +3,7 @@ using ForumAPI.Contract.AnswerContract;
 using ForumAPI.Contract.LoginContract;
 using ForumAPI.Contract.QuestionContract;
 using ForumAPI.Contract.UserContract;
+using ForumAPI.Contract.VoteContract;
 using ForumAPI.Data.Entity;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace ForumAPI.Service.Mapping
             CreateMap<User, UserLoginContract>().ReverseMap();
             CreateMap<Answer, AddAnswerContract>().ReverseMap();
             CreateMap<AddQuestionToFavContract, Favorite>().ReverseMap();
-
+            CreateMap<Vote, AddVoteContract>().ReverseMap();
             CreateMap<Question, GetAllQuestionsContract>().ReverseMap();
         }
 
