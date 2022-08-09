@@ -28,7 +28,7 @@ namespace ForumAPI.Data.Concrete
                 Content = p.Content,
                 Category = p.Category,
                 Answer = p.Answers.Count(),
-                Vote = p.Votes.Where(y => y.Vote1 == true).Count() - p.Votes.Where(z => z.Vote1 == false).Count(),
+                Vote = p.Votes.Where(y => y.Voted == true).Count() - p.Votes.Where(z => z.Voted == false).Count(),
                 User = new Contract.UserContract.UserResponseContract {
                     Name = p.User.Name,
                     Id = p.User.Id,
