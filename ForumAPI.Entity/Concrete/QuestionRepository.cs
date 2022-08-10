@@ -1,4 +1,6 @@
-﻿using ForumAPI.Contract.QuestionContract;
+﻿using ForumAPI.Contract.AnswerContract;
+using ForumAPI.Contract.QuestionContract;
+using ForumAPI.Contract.UserContract;
 using ForumAPI.Data.Abstract;
 using ForumAPI.Data.Entity;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +23,7 @@ namespace ForumAPI.Data.Concrete
         public async Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails()
         {
 
-            var allQuestions =  await _dbSet.AsNoTracking().Select(p => new GetAllQuestionsContract
+            var allQuestions = await _dbSet.AsNoTracking().Select(p => new GetAllQuestionsContract
             {
                 Title = p.Title,
                 View = p.QuestionViews.Count(),
@@ -29,7 +31,8 @@ namespace ForumAPI.Data.Concrete
                 Category = p.Category,
                 Answer = p.Answers.Count(),
                 Vote = p.Votes.Where(y => y.Voted == true).Count() - p.Votes.Where(z => z.Voted == false).Count(),
-                User = new Contract.UserContract.UserResponseContract {
+                User = new UserResponseContract
+                {
                     Name = p.User.Name,
                     Id = p.User.Id,
                     Surname = p.User.Surname,
@@ -39,6 +42,46 @@ namespace ForumAPI.Data.Concrete
 
             return allQuestions;
         }
-    }
 
+        public async Task<QuestionDetailContract> GetQuestionsWithDetail(int id)
+        {
+            var questionDetail = await _dbSet.Where(x => x.Id == id).Select(p => new QuestionDetailContract 
+            {
+                Title = p.Title,
+                View = p.QuestionViews.Count(),
+                Content = p.Content,
+                Category = p.Category,
+                Answer = p.Answers.Count(),
+                Vote = p.Votes.Where(y => y.Voted == true).Count() - p.Votes.Where(z => z.Voted == false).Count(),
+                User = new UserResponseContract
+                {
+                    Name = p.User.Name,
+                    Id = p.User.Id,
+                    Surname = p.User.Surname,
+                    Image = p.User.Image
+                },
+                AnswerResponse = p.Answers.Select(q => new AnswerResponseContract
+                {
+                    User = new UserResponseContract
+                    {
+                        Name = q.User.Name,
+                        Id = q.User.Id,
+                        Surname = q.User.Surname,
+                        Image = q.User.Image
+                    },
+                    Content = q.Content,
+                    CreatedDateTime = q.CreatedTime
+  
+                    
+                })
+
+            }).FirstOrDefaultAsync();
+            return questionDetail;
+
+        }
+    }
 }
+
+
+
+

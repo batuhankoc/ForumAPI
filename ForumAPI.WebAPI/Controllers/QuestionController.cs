@@ -39,5 +39,12 @@ namespace ForumAPI.WebAPI.Controllers
             await _questionService.AddQuestionToFavAsync(addQuestionToFavContract);
             return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK));
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetQuestionDetail(int id)
+        {
+            var questionDetails = await _questionService.GetQuestionsWithDetail(id);
+            return Ok(CustomResponseContract.Success(questionDetails, HttpStatusCode.OK));
+        }
+
     }
 }

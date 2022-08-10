@@ -64,5 +64,12 @@ namespace ForumAPI.Service.Concrete
             var questions = await _questionRepository.GetAllQuestionsWithDetails();
             return questions.OrderByDescending(x => x.CreatedDateTime).ToList();
         }
+
+
+        public async Task<QuestionDetailContract> GetQuestionsWithDetail(int id)
+        {
+           
+            return await _questionRepository.GetQuestionsWithDetail(id);
+        }
     }
 }
