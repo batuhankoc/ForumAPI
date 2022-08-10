@@ -30,47 +30,47 @@ namespace ForumAPI.Service.Concrete
 
         public async Task AddVote(AddVoteContract addVoteContract)
         {
+            await CheckUser(addVoteContract);
+            await CheckQuestion(addVoteContract);
+
+            if (addVoteContract.Voted == null)
+            {
+                throw new ClientSideException("User can not vote null");
+            }
+
+            var dbVote = await _voteRepository.GetVote(addVoteContract.QuestionId, addVoteContract.UserId);
+            if (dbVote == null)
+            {
+                var mapVote = _mapper.Map<Vote>(addVoteContract);
+                await _voteRepository.AddAsync(mapVote);
+            }
+            else
+            {
+                if (dbVote.Voted == addVoteContract.Voted || addVoteContract.Voted == null)
+                {
+                    throw new ClientSideException("aynı vote veya null gelme durumu");
+                }
+
+                dbVote.Voted = dbVote.Voted == null ? addVoteContract.Voted : null;
+                await _voteRepository.UpdateAsync(dbVote);
+            }
+        }
+
+        private async Task CheckUser(AddVoteContract addVoteContract)
+        {
             var user = await _userRepository.GetByIdAsync(addVoteContract.UserId);
             if (user == null)
             {
                 throw new NotFoundException("User not found");
             }
-
+        }
+        private async Task CheckQuestion(AddVoteContract addVoteContract)
+        {
             var question = await _questionRepository.GetByIdAsync(addVoteContract.QuestionId);
             if (question == null)
             {
                 throw new NotFoundException("Question not found");
             }
-
-            var mapVote = _mapper.Map<Vote>(addVoteContract);
-            var isVoted = await _voteRepository.CheckVote(addVoteContract.QuestionId,
-              addVoteContract.UserId);
-            if (!isVoted)
-            {
-                await _voteRepository.AddAsync(mapVote);
-            }
-            var dbVote = await _voteRepository.GetByIdAsync(mapVote.Id);
-            if(dbVote.Voted == null)
-            {
-                await _voteRepository.UpdateAsync(mapVote);
-            }
-            else if(dbVote.Voted == true)
-            {
-                if(mapVote.Voted == true)
-                {
-                    throw new ClientSideException("Bir daha oy veremezsiniz");
-                }
-                else if(mapVote.Voted == false)
-                {
-                    mapVote.Voted = null;
-                    await _voteRepository.UpdateAsync(mapVote);
-                }
-            }
-
-
-           
         }
-
-       
     }
 }
