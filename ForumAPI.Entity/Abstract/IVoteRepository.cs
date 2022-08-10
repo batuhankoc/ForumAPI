@@ -10,6 +10,7 @@ namespace ForumAPI.Data.Abstract
     public interface IVoteRepository : IGenericRepository<Vote>
     {
         Task<bool> CheckVote(int questionId, int userId);
+        Task<Vote?> GetVote(int questionId, int userId);
 
     }
 }

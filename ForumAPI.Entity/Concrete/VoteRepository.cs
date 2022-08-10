@@ -21,5 +21,9 @@ namespace ForumAPI.Data.Concrete
         {
             return await _vote.AnyAsync(x => x.QuestionId == questionId && x.UserId == userId);
         }
+        public async Task<Vote?> GetVote(int questionId, int userId)
+        {
+            return await _vote.FirstOrDefaultAsync(x => x.QuestionId.Equals(questionId) && x.UserId.Equals(userId) );
+        }
     }
 }
