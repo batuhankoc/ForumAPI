@@ -11,5 +11,6 @@ namespace ForumAPI.Data.Abstract
     public interface IQuestionRepository : IGenericRepository<Question> 
     {
         Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails();
+        Task<QuestionDetailContract> GetQuestionsWithDetail(int id);
     }
 }
