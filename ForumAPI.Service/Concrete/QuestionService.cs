@@ -66,10 +66,12 @@ namespace ForumAPI.Service.Concrete
         }
 
 
-        public async Task<QuestionDetailContract> GetQuestionsWithDetail(int id)
+        public async Task<QuestionDetailResponseContract> GetQuestionsWithDetail(int id, int userId)
         {
-           
-            return await _questionRepository.GetQuestionsWithDetail(id);
+           var questionDb = await _questionRepository.GetQuestionsWithDetail(id);
+           questionDb.IsFavorite = await _favoriteRepository.CheckFavorite(questionDb.Id, userId);
+           var question = _mapper.Map<QuestionDetailResponseContract>(questionDb);
+            return question;
         }
     }
 }

@@ -40,9 +40,9 @@ namespace ForumAPI.WebAPI.Controllers
             return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK));
         }
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetQuestionDetail(int id)
+        public async Task<IActionResult> GetQuestionDetail(int id, int userId)
         {
-            var questionDetails = await _questionService.GetQuestionsWithDetail(id);
+            var questionDetails = await _questionService.GetQuestionsWithDetail(id, userId);
             return Ok(CustomResponseContract.Success(questionDetails, HttpStatusCode.OK));
         }
 

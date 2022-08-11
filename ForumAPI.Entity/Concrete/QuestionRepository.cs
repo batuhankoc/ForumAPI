@@ -47,6 +47,7 @@ namespace ForumAPI.Data.Concrete
         {
             var questionDetail = await _dbSet.Where(x => x.Id == id).Select(p => new QuestionDetailContract 
             {
+                Id = p.Id,
                 Title = p.Title,
                 View = p.QuestionViews.Count(),
                 Content = p.Content,
@@ -71,9 +72,9 @@ namespace ForumAPI.Data.Concrete
                     },
                     Content = q.Content,
                     CreatedDateTime = q.CreatedTime
-  
-                    
-                })
+                }).ToList(),
+                Favorite = p.Favorites.Where(x => x.IsDeleted == false).Count(),
+
 
             }).FirstOrDefaultAsync();
             return questionDetail;
