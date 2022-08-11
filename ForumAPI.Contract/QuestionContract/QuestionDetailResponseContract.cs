@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace ForumAPI.Contract.QuestionContract
 {
-    public class QuestionDetailContract
+    public class QuestionDetailResponseContract
     {
-        public int Id { get; set; }
         public UserResponseContract User { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
