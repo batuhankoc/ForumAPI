@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ForumAPI.Cache\ForumAPI.Cache.csproj" />
     <ProjectReference Include="..\ForumAPI.Contract\ForumAPI.Contract.csproj" />
     <ProjectReference Include="..\ForumAPI.Entity\ForumAPI.Data.csproj" />
   </ItemGroup>

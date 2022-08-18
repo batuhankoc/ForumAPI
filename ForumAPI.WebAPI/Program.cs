@@ -1,4 +1,5 @@
 using FluentValidation.AspNetCore;
+using ForumAPI.Cache.Redis;
 using ForumAPI.Data.Abstract;
 using ForumAPI.Data.Concrete;
 using ForumAPI.Data.Entity;
@@ -22,6 +23,11 @@ builder.Services.AddFluentValidationAutoValidation(config =>
 {
     config.DisableDataAnnotationsValidation = true;
 });
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6379";
+});
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -42,6 +48,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IQuestionService, QuestionService>();
 builder.Services.AddTransient<IAnswerService, AnswerService>();
 builder.Services.AddTransient<IVoteService, VoteService>();
+builder.Services.AddTransient<IRedisCache, RedisCacheManager>();
 
 builder.Services.AddAutoMapper(typeof(MapProfile));
 
