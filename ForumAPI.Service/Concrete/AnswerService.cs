@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ForumAPI.Cache.Redis;
 using ForumAPI.Contract.AnswerContract;
 using ForumAPI.Data.Abstract;
 using ForumAPI.Data.Entity;
@@ -17,15 +18,18 @@ namespace ForumAPI.Service.Concrete
         private readonly IAnswerRepository _answerRepository;
         private readonly IUserRepository _userRepository;
         private readonly IQuestionRepository _questionRepository;
-
         private readonly IMapper _mapper;
+        private readonly IRedisCache _redisCache;
+        private readonly string GetAllQuestionsContractKey = "GetAllQuestionsContract";
+        private readonly string QuestionDetailResponseContractKey = "QuestionDetailResponseContract";
 
-        public AnswerService(IAnswerRepository answerRepository, IMapper mapper, IUserRepository userRepository, IQuestionRepository questionRepository)
+        public AnswerService(IAnswerRepository answerRepository, IUserRepository userRepository, IQuestionRepository questionRepository, IMapper mapper, IRedisCache redisCache)
         {
-            _answerRepository = answerRepository;
-            _mapper = mapper;
-            _userRepository = userRepository;
-            _questionRepository = questionRepository;
+            _answerRepository=answerRepository;
+            _userRepository=userRepository;
+            _questionRepository=questionRepository;
+            _mapper=mapper;
+            _redisCache=redisCache;
         }
 
         public async Task AddAnswerAsync(AddAnswerContract addAnswerContract)
@@ -45,10 +49,14 @@ namespace ForumAPI.Service.Concrete
 
             var addAnswer = _mapper.Map<Answer>(addAnswerContract);
             await _answerRepository.AddAsync(addAnswer);
+            await _redisCache.Remove(GetAllQuestionsContractKey);
+            await _redisCache.Remove(QuestionDetailResponseContractKey);
 
 
 
         }
+
+
 
 
     }

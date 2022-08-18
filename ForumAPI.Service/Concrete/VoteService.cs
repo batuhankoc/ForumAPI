@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ForumAPI.Cache.Redis;
 using ForumAPI.Contract.VoteContract;
 using ForumAPI.Data.Abstract;
 using ForumAPI.Data.Entity;
@@ -18,14 +19,17 @@ namespace ForumAPI.Service.Concrete
         private readonly IUserRepository _userRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly IMapper _mapper;
+        private readonly IRedisCache _redisCache;
+        private readonly string GetAllQuestionsContractKey = "GetAllQuestionsContract";
+        private readonly string QuestionDetailResponseContractKey = "QuestionDetailResponseContract";
 
-        public VoteService(IVoteRepository voteRepository, IUserRepository userRepository,
-            IQuestionRepository questionRepository, IMapper mapper)
+        public VoteService(IVoteRepository voteRepository, IUserRepository userRepository, IQuestionRepository questionRepository, IMapper mapper, IRedisCache redisCache)
         {
-            _voteRepository = voteRepository;
-            _userRepository = userRepository;
-            _questionRepository = questionRepository;
-            _mapper = mapper;
+            _voteRepository=voteRepository;
+            _userRepository=userRepository;
+            _questionRepository=questionRepository;
+            _mapper=mapper;
+            _redisCache=redisCache;
         }
 
         public async Task AddVote(AddVoteContract addVoteContract)
@@ -43,6 +47,9 @@ namespace ForumAPI.Service.Concrete
             {
                 var mapVote = _mapper.Map<Vote>(addVoteContract);
                 await _voteRepository.AddAsync(mapVote);
+                await _redisCache.Remove(GetAllQuestionsContractKey);
+                await _redisCache.Remove(QuestionDetailResponseContractKey);
+                
             }
             else
             {
@@ -53,6 +60,8 @@ namespace ForumAPI.Service.Concrete
 
                 dbVote.Voted = dbVote.Voted == null ? addVoteContract.Voted : null;
                 await _voteRepository.UpdateAsync(dbVote);
+                await _redisCache.Remove(GetAllQuestionsContractKey);
+                await _redisCache.Remove(QuestionDetailResponseContractKey);
             }
         }
 
