@@ -1,4 +1,6 @@
 using FluentValidation.AspNetCore;
+using ForumAPI.Cache.Concrete;
+using ForumAPI.Cache.Interfaces;
 using ForumAPI.Cache.Redis;
 using ForumAPI.Data.Abstract;
 using ForumAPI.Data.Concrete;
@@ -49,6 +51,9 @@ builder.Services.AddTransient<IQuestionService, QuestionService>();
 builder.Services.AddTransient<IAnswerService, AnswerService>();
 builder.Services.AddTransient<IVoteService, VoteService>();
 builder.Services.AddTransient<IRedisCache, RedisCacheManager>();
+builder.Services.AddTransient<IFavoriteCache, FavoriteCache>();
+builder.Services.AddTransient<IQuestionDetailCache, QuestionDetailCache>();
+builder.Services.AddTransient<IQuestionsCache, QuestionsCache>();
 
 builder.Services.AddAutoMapper(typeof(MapProfile));
 

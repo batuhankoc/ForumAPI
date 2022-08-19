@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ForumAPI.Cache.Interfaces;
 using ForumAPI.Cache.Redis;
 using ForumAPI.Contract.QuestionContract;
 using ForumAPI.Data.Abstract;
@@ -19,29 +20,52 @@ namespace ForumAPI.Service.Concrete
         private readonly IMapper _mapper;
         private readonly IFavoriteRepository _favoriteRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IRedisCache _redisCache;
-        private readonly string GetAllQuestionsContractKey = "GetAllQuestionsContract";
-        private readonly string QuestionDetailResponseContractKey = "QuestionDetailResponseContract_{0}";
-        private readonly string AddQuestionToFavContractKey = "AddQuestionToFavContract_{0}_[1}";
+        private readonly IFavoriteCache _favoriteCache;
+        private readonly IQuestionDetailCache _questionDetailCache;
+        private readonly IQuestionsCache _questionsCache;
 
-        public QuestionService(IQuestionRepository questionRepository, IMapper mapper, IFavoriteRepository favoriteRepository, IUserRepository userRepository, IRedisCache redisCache)
+        public QuestionService(IQuestionRepository questionRepository, IMapper mapper, IFavoriteRepository favoriteRepository,
+            IUserRepository userRepository, IFavoriteCache favoriteCache = null, IQuestionDetailCache questionDetailCache = null, IQuestionsCache questionsCache = null)
         {
             _questionRepository = questionRepository;
             _mapper = mapper;
             _favoriteRepository = favoriteRepository;
             _userRepository = userRepository;
-            _redisCache = redisCache;
+            _favoriteCache = favoriteCache;
+            _questionDetailCache = questionDetailCache;
+            _questionsCache = questionsCache;
         }
 
         public async Task AddQuestionAsync(AddQuestionContract addQuestionContract)
         {
             var addQuestion = _mapper.Map<Question>(addQuestionContract);
             await _questionRepository.AddAsync(addQuestion);
-            await _redisCache.Remove(GetAllQuestionsContractKey);
-
+            await _questionsCache.Remove();
         }
 
         public async Task AddQuestionToFavAsync(AddQuestionToFavContract addQuestionToFavContract)
+        {
+            await AddQuestionToFavHelper(addQuestionToFavContract);
+            var model = _mapper.Map<Favorite>(addQuestionToFavContract);
+            await _favoriteRepository.AddAsync(model);
+            await _questionsCache.Remove();
+        }
+
+        public async Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails()
+        {
+            var questions = _questionsCache.GetAllQuestionsWithDetails();
+            return await questions;
+        }
+
+        public async Task<QuestionDetailResponseContract> GetQuestionsWithDetail(int id, int userId)
+        {
+            var isFavorite = await _favoriteCache.CheckFav(id, userId);
+            var questionResponse = await _questionDetailCache.GetQuestionsWithDetail(id);
+            questionResponse.IsFavorite = isFavorite;
+            return questionResponse;
+        }
+
+        private async Task AddQuestionToFavHelper(AddQuestionToFavContract addQuestionToFavContract)
         {
             var user = await _userRepository.GetByIdAsync(addQuestionToFavContract.UserId);
             if (user == null)
@@ -61,49 +85,7 @@ namespace ForumAPI.Service.Concrete
             {
                 throw new NotFoundException("Question already in favorites");
             }
-            var cacheKey = string.Format(QuestionDetailResponseContractKey, addQuestionToFavContract.UserId,addQuestionToFavContract.QuestionId);
-            var model = _mapper.Map<Favorite>(addQuestionToFavContract);
-            await _favoriteRepository.AddAsync(model);
-            await _redisCache.Set(cacheKey, model, TimeSpan.FromMinutes(10));
-            await _redisCache.Remove(QuestionDetailResponseContractKey);
         }
 
-        public async Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails()
-        {
-
-            if (await _redisCache.Any(GetAllQuestionsContractKey))
-            {
-                return await _redisCache.Get<List<GetAllQuestionsContract>>(GetAllQuestionsContractKey);
-            }
-            var questions = await _questionRepository.GetAllQuestionsWithDetails();
-            await _redisCache.Set(GetAllQuestionsContractKey, questions, TimeSpan.FromSeconds(120));
-            return questions.OrderByDescending(x => x.CreatedDateTime).ToList();
-        }
-
-
-        public async Task<QuestionDetailResponseContract> GetQuestionsWithDetail(int id, int userId)
-        {
-            var cacheKey = string.Format(QuestionDetailResponseContractKey, id);
-            if (await _redisCache.Any(cacheKey))
-            {
-                var questionFromCache = await _redisCache.Get<QuestionDetailResponseContract>(cacheKey);
-                questionFromCache.IsFavorite = await CheckFav(id, userId);
-                return questionFromCache;
-            }
-            var questionDb = await _questionRepository.GetQuestionsWithDetail(id);
-            questionDb.IsFavorite = await CheckFav(id, userId);
-            var question = _mapper.Map<QuestionDetailResponseContract>(questionDb);
-            await _redisCache.Set(cacheKey, question, TimeSpan.FromMinutes(2));
-            return question;
-        }
-        private async Task<bool> CheckFav(int id, int userId)
-        {
-            var cacheKey = string.Format(AddQuestionToFavContractKey, userId, id);
-            if (await _redisCache.Any(cacheKey))
-            {
-                return true;
-            }
-           return await _favoriteRepository.CheckFavorite(id, userId);
-        }
     }
 }

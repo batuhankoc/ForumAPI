@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using ForumAPI.Cache.Keys;
+using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace ForumAPI.Cache.Redis
 {
     public class RedisCacheManager : IRedisCache
         {
-        private readonly IDistributedCache _distributedCache;
+        protected readonly IDistributedCache _distributedCache;
 
         public RedisCacheManager(IDistributedCache distributedCache)
         {
