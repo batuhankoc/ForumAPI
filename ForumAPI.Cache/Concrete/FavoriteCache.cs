@@ -25,7 +25,7 @@ namespace ForumAPI.Cache.Concrete
             string cacheKey = string.Format(CacheKeys.FavoriteCacheKey, id, userId);
             if (await Any(cacheKey))
             {
-                return true;
+                return await Get<bool>(cacheKey);
             }
             bool isFavorite = await _favoriteRepository.CheckFavorite(id, userId);
             if (isFavorite)
