@@ -23,9 +23,10 @@ namespace ForumAPI.Service.Concrete
         private readonly IFavoriteCache _favoriteCache;
         private readonly IQuestionDetailCache _questionDetailCache;
         private readonly IQuestionsCache _questionsCache;
+        private readonly IVoteCache _voteCache;
 
         public QuestionService(IQuestionRepository questionRepository, IMapper mapper, IFavoriteRepository favoriteRepository,
-            IUserRepository userRepository, IFavoriteCache favoriteCache = null, IQuestionDetailCache questionDetailCache = null, IQuestionsCache questionsCache = null)
+            IUserRepository userRepository, IFavoriteCache favoriteCache = null, IQuestionDetailCache questionDetailCache = null, IQuestionsCache questionsCache = null, IVoteCache voteCache = null)
         {
             _questionRepository = questionRepository;
             _mapper = mapper;
@@ -34,6 +35,7 @@ namespace ForumAPI.Service.Concrete
             _favoriteCache = favoriteCache;
             _questionDetailCache = questionDetailCache;
             _questionsCache = questionsCache;
+            _voteCache = voteCache;
         }
 
         public async Task AddQuestionAsync(AddQuestionContract addQuestionContract)
@@ -61,6 +63,7 @@ namespace ForumAPI.Service.Concrete
         {
             var isFavorite = await _favoriteCache.CheckFav(id, userId);
             var questionResponse = await _questionDetailCache.GetQuestionsWithDetail(id);
+            questionResponse.Vote = await _voteCache.GetNumberOfVotes(id);
             questionResponse.IsFavorite = isFavorite;
             return questionResponse;
         }

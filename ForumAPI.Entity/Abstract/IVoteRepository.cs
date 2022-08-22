@@ -11,6 +11,7 @@ namespace ForumAPI.Data.Abstract
     {
         Task<bool> CheckVote(int questionId, int userId);
         Task<Vote?> GetVote(int questionId, int userId);
+        Task<int> GetNumberOfVotes(int questionId);
 
     }
 }

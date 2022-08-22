@@ -53,7 +53,7 @@ namespace ForumAPI.Data.Concrete
                 Content = p.Content,
                 Category = p.Category,
                 Answer = p.Answers.Count(),
-                Vote = p.Votes.Where(y => y.Voted == true).Count() - p.Votes.Where(z => z.Voted == false).Count(),
+                //Vote = p.Votes.Where(y => y.Voted == true).Count() - p.Votes.Where(z => z.Voted == false).Count(),
                 User = new UserResponseContract
                 {
                     Name = p.User.Name,
