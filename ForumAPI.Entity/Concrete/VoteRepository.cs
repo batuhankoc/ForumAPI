@@ -25,5 +25,12 @@ namespace ForumAPI.Data.Concrete
         {
             return await _vote.FirstOrDefaultAsync(x => x.QuestionId.Equals(questionId) && x.UserId.Equals(userId) );
         }
+
+        public async Task<int> GetNumberOfVotes(int questionId)
+        {
+            var trueVotes = await _vote.Where(x => x.QuestionId.Equals(questionId)).Where(y => y.Voted==true).CountAsync();
+            var falseVotes = await _vote.Where(x => x.QuestionId.Equals(questionId)).Where(y => y.Voted==false).CountAsync();
+            return trueVotes - falseVotes;
+        }
     }
 }

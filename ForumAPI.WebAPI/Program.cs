@@ -54,6 +54,7 @@ builder.Services.AddTransient<IRedisCache, RedisCacheManager>();
 builder.Services.AddTransient<IFavoriteCache, FavoriteCache>();
 builder.Services.AddTransient<IQuestionDetailCache, QuestionDetailCache>();
 builder.Services.AddTransient<IQuestionsCache, QuestionsCache>();
+builder.Services.AddTransient<IVoteCache, VoteCache>();
 
 builder.Services.AddAutoMapper(typeof(MapProfile));
 
