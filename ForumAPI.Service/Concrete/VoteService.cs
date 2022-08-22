@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ForumAPI.Cache.Interfaces;
+using ForumAPI.Cache.Keys;
 using ForumAPI.Cache.Redis;
 using ForumAPI.Contract.VoteContract;
 using ForumAPI.Data.Abstract;
@@ -20,16 +22,16 @@ namespace ForumAPI.Service.Concrete
         private readonly IQuestionRepository _questionRepository;
         private readonly IMapper _mapper;
         private readonly IRedisCache _redisCache;
-        private readonly string GetAllQuestionsContractKey = "GetAllQuestionsContract";
-        private readonly string QuestionDetailResponseContractKey = "QuestionDetailResponseContract";
+        private readonly IVoteCache _voteCache;
 
-        public VoteService(IVoteRepository voteRepository, IUserRepository userRepository, IQuestionRepository questionRepository, IMapper mapper, IRedisCache redisCache)
+        public VoteService(IVoteRepository voteRepository, IUserRepository userRepository, IQuestionRepository questionRepository, IMapper mapper, IRedisCache redisCache, IVoteCache voteCache)
         {
-            _voteRepository=voteRepository;
-            _userRepository=userRepository;
-            _questionRepository=questionRepository;
-            _mapper=mapper;
-            _redisCache=redisCache;
+            _voteRepository = voteRepository;
+            _userRepository = userRepository;
+            _questionRepository = questionRepository;
+            _mapper = mapper;
+            _redisCache = redisCache;
+            _voteCache = voteCache;
         }
 
         public async Task AddVote(AddVoteContract addVoteContract)
@@ -42,26 +44,25 @@ namespace ForumAPI.Service.Concrete
                 throw new ClientSideException("User can not vote null");
             }
 
-            var dbVote = await _voteRepository.GetVote(addVoteContract.QuestionId, addVoteContract.UserId);
-            if (dbVote == null)
+            var vote = await _voteCache.GetVote(addVoteContract.QuestionId, addVoteContract.UserId);
+            string cacheKey = string.Format(CacheKeys.GetVoteKey, addVoteContract.QuestionId, addVoteContract.UserId);
+            if (vote == null)
             {
                 var mapVote = _mapper.Map<Vote>(addVoteContract);
                 await _voteRepository.AddAsync(mapVote);
-                await _redisCache.Remove(GetAllQuestionsContractKey);
-                await _redisCache.Remove(QuestionDetailResponseContractKey);
-                
+                await _voteCache.Remove(cacheKey);
             }
             else
             {
-                if (dbVote.Voted == addVoteContract.Voted || addVoteContract.Voted == null)
+                if (vote.Voted == addVoteContract.Voted || addVoteContract.Voted == null)
                 {
                     throw new ClientSideException("aynı vote veya null gelme durumu");
                 }
 
-                dbVote.Voted = dbVote.Voted == null ? addVoteContract.Voted : null;
-                await _voteRepository.UpdateAsync(dbVote);
-                await _redisCache.Remove(GetAllQuestionsContractKey);
-                await _redisCache.Remove(QuestionDetailResponseContractKey);
+                vote.Voted = vote.Voted == null ? addVoteContract.Voted : null;
+                await _voteRepository.UpdateAsync(vote);
+                await _voteCache.Remove(cacheKey);
+
             }
         }
 
