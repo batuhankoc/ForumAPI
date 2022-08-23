@@ -50,7 +50,6 @@ namespace ForumAPI.Service.Concrete
             {
                 var mapVote = _mapper.Map<Vote>(addVoteContract);
                 await _voteRepository.AddAsync(mapVote);
-                await _voteCache.Remove(cacheKey);
             }
             else
             {
@@ -60,10 +59,10 @@ namespace ForumAPI.Service.Concrete
                 }
 
                 vote.Voted = vote.Voted == null ? addVoteContract.Voted : null;
-                await _voteRepository.UpdateAsync(vote);
-                await _voteCache.Remove(cacheKey);
+                await _voteRepository.UpdateAsync(vote);             
 
             }
+            await _voteCache.Remove(cacheKey);
         }
 
         private async Task CheckUser(AddVoteContract addVoteContract)

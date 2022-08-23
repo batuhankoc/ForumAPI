@@ -15,6 +15,7 @@ namespace ForumAPI.Data.Concrete
     public class QuestionRepository : GenericRepository<Question>, IQuestionRepository
     {
         private readonly DbSet<Question> _dbSet;
+        
         public QuestionRepository(DataContext context) : base(context)
         {
             _dbSet = context.Set<Question>();
@@ -45,7 +46,7 @@ namespace ForumAPI.Data.Concrete
 
         public async Task<QuestionDetailContract> GetQuestionsWithDetail(int id)
         {
-            var questionDetail = await _dbSet.Where(x => x.Id == id).Select(p => new QuestionDetailContract 
+            var questionDetail = await _dbSet.Where(x => x.Id == id).Select(p => new QuestionDetailContract
             {
                 Id = p.Id,
                 Title = p.Title,

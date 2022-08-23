@@ -49,9 +49,9 @@ namespace ForumAPI.Cache.Concrete
 
         }
 
-        public async Task Remove()
+        public Task Remove()
         {
-            await Remove();
+            throw new NotImplementedException();
         }
     }
 }
