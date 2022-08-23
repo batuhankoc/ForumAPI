@@ -1,8 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace ForumAPI.Data.Entity
 {
+    [JsonObject(IsReference = true)]
+
     public partial class Question
     {
         public Question()
@@ -26,6 +31,8 @@ namespace ForumAPI.Data.Entity
         public virtual ICollection<Answer> Answers { get; set; }
         public virtual ICollection<Favorite> Favorites { get; set; }
         public virtual ICollection<QuestionView> QuestionViews { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<Vote> Votes { get; set; }
     }
 }
