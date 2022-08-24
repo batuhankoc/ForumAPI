@@ -1,4 +1,5 @@
 ﻿using ForumAPI.Contract.AnswerContract;
+using ForumAPI.Contract.DeleteContract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace ForumAPI.Service.Abstract
     public interface IAnswerService
     {
         Task AddAnswerAsync(AddAnswerContract addAnswerContract);
+        Task DeleteAnswerAsync(DeleteContract deleteContract);
         
     }
 }

@@ -1,4 +1,5 @@
-﻿using ForumAPI.Contract.QuestionContract;
+﻿using ForumAPI.Contract.DeleteContract;
+using ForumAPI.Contract.QuestionContract;
 using ForumAPI.Data.Entity;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,8 @@ namespace ForumAPI.Service.Abstract
         Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails();
         Task AddQuestionToFavAsync(AddQuestionToFavContract addQuestionToFavContract);
         Task<QuestionDetailResponseContract> GetQuestionsWithDetail(int id, int userId);
+        Task DeleteQuestion(DeleteContract deleteContract);
+        Task DeleteFavorite(DeleteContract deleteContract);
+        
     }
 }
