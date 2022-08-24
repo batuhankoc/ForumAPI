@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ForumAPI.Data.Entity
 {
-    public partial class Favorite
+    public partial class Favorite : IEntity, ISoftDelete
     {
         public int Id { get; set; }
         public int UserId { get; set; }

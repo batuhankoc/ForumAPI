@@ -1,4 +1,5 @@
-﻿using ForumAPI.Data.Abstract;
+﻿using ForumAPI.Contract;
+using ForumAPI.Data.Abstract;
 using ForumAPI.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ForumAPI.Data.Concrete
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : class, IEntity
     {
         protected readonly DataContext _context;
         private readonly DbSet<T> _dbSet;
@@ -29,15 +30,15 @@ namespace ForumAPI.Data.Concrete
 
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression)
         {
-            
-           return await Task.FromResult(_dbSet.Where(expression));
+
+            return await Task.FromResult(_dbSet.Where(expression));
 
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await Task.FromResult(_dbSet.ToList());
-           // return await _dbSet.ToListAsync(); bu şekilde de çalışıyor neden fromresult kullandık
+            // return await _dbSet.ToListAsync(); bu şekilde de çalışıyor neden fromresult kullandık
         }
 
         public async Task<T> GetByIdAsync(object id)
@@ -45,10 +46,45 @@ namespace ForumAPI.Data.Concrete
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task RemoveAsync(T entity)
+        public async Task RemoveAsync(T entity, bool hardDelete = false)
         {
-            //_context.Entry(entity).State = EntityState.Deleted;
-            await Task.FromResult(_dbSet.Remove(entity));
+            if (entity is ISoftDelete soft && !hardDelete)
+            {
+                soft.IsDeleted = true;
+                await UpdateAsync(entity);
+            }
+            else
+            {
+                await Task.FromResult(_dbSet.Remove(entity));
+            }
+            await SaveChanges();
+        }
+
+        public async Task RemoveAsync(object id, bool hardDelete = false)
+        {
+            var entity = await GetByIdAsync(id);
+
+            if (entity==null)
+            {
+                throw new ArgumentNullException("Kayıt bulunamadı");
+            }
+
+            await RemoveAsync(entity, hardDelete);
+        }
+
+        public async Task UpdateAsync(IContract contract)
+        {
+            var entity = await GetByIdAsync(contract.Id);
+
+            if (entity == null)
+            {
+                throw new Exception("");
+            }
+            if (entity is IHasUpdatedAt at)
+            {
+                at.UpdatedTime = DateTime.Now;
+            }
+            _context.Entry(entity).CurrentValues.SetValues(contract);
             await SaveChanges();
         }
 
@@ -61,7 +97,7 @@ namespace ForumAPI.Data.Concrete
         }
         private async Task SaveChanges()
         {
-            await _context.SaveChangesAsync(); 
+            await _context.SaveChangesAsync();
         }
     }
 }

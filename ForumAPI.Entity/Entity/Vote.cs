@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ForumAPI.Data.Entity
 {
-    public partial class Vote
+    public partial class Vote : IEntity
     {
         public int Id { get; set; }
         public int UserId { get; set; }

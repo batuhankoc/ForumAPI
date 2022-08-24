@@ -7,7 +7,7 @@ namespace ForumAPI.Data.Entity
 {
     [JsonObject(IsReference = true)]
 
-    public partial class User
+    public partial class User : IEntity, ISoftDelete, IHasUpdatedAt
     {
         public User()
         {

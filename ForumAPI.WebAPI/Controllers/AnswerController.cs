@@ -1,4 +1,5 @@
 ﻿using ForumAPI.Contract.AnswerContract;
+using ForumAPI.Contract.DeleteContract;
 using ForumAPI.Contract.ResponseContract;
 using ForumAPI.Service.Abstract;
 using Microsoft.AspNetCore.Http;
@@ -23,6 +24,13 @@ namespace ForumAPI.WebAPI.Controllers
         {
             await _answerService.AddAnswerAsync(addAnswerContract);
             return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK)); 
+        }
+        [HttpPost("[action]")]
+        public async Task<IActionResult> DeleteAnswer(DeleteContract deleteContract)
+        {
+            await _answerService.DeleteAnswerAsync(deleteContract);
+            return Ok(CustomResponseContract.Success("Yanıt Silindi", HttpStatusCode.OK));
+
         }
 
     

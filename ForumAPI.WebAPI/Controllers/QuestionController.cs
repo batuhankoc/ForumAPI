@@ -1,4 +1,5 @@
 ﻿using FluentValidation.Results;
+using ForumAPI.Contract.DeleteContract;
 using ForumAPI.Contract.QuestionContract;
 using ForumAPI.Contract.ResponseContract;
 using ForumAPI.Service.Abstract;
@@ -45,6 +46,20 @@ namespace ForumAPI.WebAPI.Controllers
             var questionDetails = await _questionService.GetQuestionsWithDetail(id, userId);
             return Ok(CustomResponseContract.Success(questionDetails, HttpStatusCode.OK));
         }
+        [HttpPost("[action]")]
+        public async Task<IActionResult> DeleteQuestion(DeleteContract deleteContract)
+        {
+            await _questionService.DeleteQuestion(deleteContract);
+            return Ok(CustomResponseContract.Success(null,HttpStatusCode.OK));
+        }
+        [HttpPost("[action]")]
+        public async Task<IActionResult> DeleteFavorite(DeleteContract deleteContract)
+        {
+            await _questionService.DeleteFavorite(deleteContract);
+            return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK));
+        }
+
+
 
     }
 }

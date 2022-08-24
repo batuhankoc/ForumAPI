@@ -1,4 +1,5 @@
-﻿using ForumAPI.Contract.LoginContract;
+﻿using ForumAPI.Contract.DeleteContract;
+using ForumAPI.Contract.LoginContract;
 using ForumAPI.Contract.ResponseContract;
 using ForumAPI.Contract.UserContract;
 using ForumAPI.Service.Abstract;
@@ -32,6 +33,13 @@ namespace ForumAPI.WebAPI.Controllers
         public async Task<IActionResult> Login(UserLoginContract login)
         {
             await _service.LoginAsync(login);
+            return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK));
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> DeleteUser(DeleteContract deleteContract)
+        {
+            await _service.DeleteUser(deleteContract);
             return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK));
         }
 

@@ -34,6 +34,12 @@ namespace ForumAPI.Data.Entity
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+           
+            modelBuilder.Entity<Question>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<User>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<Answer>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<Favorite>().HasQueryFilter(e => !e.IsDeleted);
+
             modelBuilder.Entity<Answer>(entity =>
             {
                 entity.ToTable("Answer");

@@ -23,23 +23,24 @@ namespace ForumAPI.Data.Concrete
 
         public async Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails()
         {
-
-            var allQuestions = await _dbSet.AsNoTracking().Select(p => new GetAllQuestionsContract
-            {
-                Title = p.Title,
-                View = p.QuestionViews.Count(),
-                Content = p.Content,
-                Category = p.Category,
-                Answer = p.Answers.Count(),
-                Vote = p.Votes.Where(y => y.Voted == true).Count() - p.Votes.Where(z => z.Voted == false).Count(),
-                User = new UserResponseContract
+       
+           var allQuestions = await _dbSet.AsNoTracking().OrderByDescending(c => c.Id)
+                .Skip(0).Take(5).Select(p => new GetAllQuestionsContract
                 {
-                    Name = p.User.Name,
-                    Id = p.User.Id,
-                    Surname = p.User.Surname,
-                    Image = p.User.Image
-                }
-            }).ToListAsync();
+                    Title = p.Title,
+                    View = p.QuestionViews.Count(),
+                    Content = p.Content,
+                    Category = p.Category,
+                    Answer = p.Answers.Count(),
+                    Vote = p.Votes.Where(y => y.Voted == true).Count() - p.Votes.Where(z => z.Voted == false).Count(),
+                    User = new UserResponseContract
+                    {
+                        Name = p.User.Name,
+                        Id = p.User.Id,
+                        Surname = p.User.Surname,
+                        Image = p.User.Image
+                    }
+                }).ToListAsync();
 
             return allQuestions;
         }
@@ -83,6 +84,7 @@ namespace ForumAPI.Data.Concrete
         }
     }
 }
+
 
 
 

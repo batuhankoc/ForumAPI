@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ForumAPI.Cache.Redis;
 using ForumAPI.Contract.AnswerContract;
+using ForumAPI.Contract.DeleteContract;
 using ForumAPI.Data.Abstract;
 using ForumAPI.Data.Entity;
 using ForumAPI.Service.Abstract;
@@ -56,8 +57,11 @@ namespace ForumAPI.Service.Concrete
 
         }
 
-
-
-
+        public async Task DeleteAnswerAsync(DeleteContract deleteContract)
+        {
+            var dbAnswer = await _answerRepository.GetByIdAsync(deleteContract.Id);
+            if(dbAnswer?.IsDeleted == true) { throw new ClientSideException("Böyle bir Yanıt yok"); };
+            await _answerRepository.RemoveAsync(dbAnswer);
+        }
     }
 }
