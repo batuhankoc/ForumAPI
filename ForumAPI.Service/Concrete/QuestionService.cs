@@ -23,11 +23,10 @@ namespace ForumAPI.Service.Concrete
         private readonly IUserRepository _userRepository;
         private readonly IFavoriteCache _favoriteCache;
         private readonly IQuestionDetailCache _questionDetailCache;
-        private readonly IQuestionsCache _questionsCache;
         private readonly IVoteCache _voteCache;
 
         public QuestionService(IQuestionRepository questionRepository, IMapper mapper, IFavoriteRepository favoriteRepository,
-            IUserRepository userRepository, IFavoriteCache favoriteCache = null, IQuestionDetailCache questionDetailCache = null, IQuestionsCache questionsCache = null, IVoteCache voteCache = null)
+            IUserRepository userRepository, IFavoriteCache favoriteCache = null, IQuestionDetailCache questionDetailCache = null, IVoteCache voteCache = null)
         {
             _questionRepository = questionRepository;
             _mapper = mapper;
@@ -35,7 +34,6 @@ namespace ForumAPI.Service.Concrete
             _userRepository = userRepository;
             _favoriteCache = favoriteCache;
             _questionDetailCache = questionDetailCache;
-            _questionsCache = questionsCache;
             _voteCache = voteCache;
         }
 
@@ -43,7 +41,6 @@ namespace ForumAPI.Service.Concrete
         {
             var addQuestion = _mapper.Map<Question>(addQuestionContract);
             await _questionRepository.AddAsync(addQuestion);
-            await _questionsCache.Remove();
         }
 
         public async Task AddQuestionToFavAsync(AddQuestionToFavContract addQuestionToFavContract)
@@ -52,13 +49,13 @@ namespace ForumAPI.Service.Concrete
             await AddQuestionToFavHelper(addQuestionToFavContract);
             var model = _mapper.Map<Favorite>(addQuestionToFavContract);
             await _favoriteRepository.AddAsync(model);
-            await _favoriteCache.RemoveFavoriteCache(addQuestionToFavContract.QuestionId,addQuestionToFavContract.UserId);
+            await _favoriteCache.RemoveFavoriteCache(addQuestionToFavContract.QuestionId, addQuestionToFavContract.UserId);
         }
 
         public async Task DeleteFavorite(DeleteContract deleteContract)
         {
             var dbFavorite = await _favoriteRepository.GetByIdAsync(deleteContract.Id);
-            if (dbFavorite== null)
+            if (dbFavorite == null)
             {
                 throw new ClientSideException("Favorite Bulunumadı");
             }
@@ -67,18 +64,34 @@ namespace ForumAPI.Service.Concrete
 
         public async Task DeleteQuestion(DeleteContract deleteContract)
         {
-            var dbQuestion = await _questionRepository.GetByIdAsync(deleteContract.Id); 
-            if (dbQuestion==null)
+            var dbQuestion = await _questionRepository.GetByIdAsync(deleteContract.Id);
+            if (dbQuestion == null)
             {
                 throw new ClientSideException("Soru bulunamadı");
             }
             await _questionRepository.RemoveAsync(dbQuestion);
         }
 
-        public async Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails()
+        public async Task<PaginationResponseContract<GetAllQuestionsContract>> GetNewestQuestions(PaginationContract paginationContract)
         {
-            var questions = _questionRepository.GetAllQuestionsWithDetails(); 
-                //_questionsCache.GetAllQuestionsWithDetails();
+            var questions = _questionRepository.GetNewestQuestions(paginationContract);
+            if (paginationContract.Page> questions.Result.Pagination.TotalPage)
+            {
+                throw new ClientSideException("sayfada veri yok");
+            }
+            else { return await questions; }
+            
+        }
+
+        public async Task<PaginationResponseContract<GetAllQuestionsContract>> GetQuestionsByDescendingAnswer(PaginationContract paginationContract)
+        {
+            var questions = _questionRepository.GetQuestionsByDescendingAnswer(paginationContract);
+            return await questions;
+        }
+
+        public async Task<PaginationResponseContract<GetAllQuestionsContract>> GetQuestionsByDescendingVote(PaginationContract paginationContract)
+        {
+            var questions = _questionRepository.GetQuestionsByDescendingVote(paginationContract);
             return await questions;
         }
 
@@ -90,7 +103,7 @@ namespace ForumAPI.Service.Concrete
             questionResponse.IsFavorite = isFavorite;
             return questionResponse;
         }
-        
+
         private async Task AddQuestionToFavHelper(AddQuestionToFavContract addQuestionToFavContract)
         {
             var user = await _userRepository.GetByIdAsync(addQuestionToFavContract.UserId);
@@ -107,9 +120,9 @@ namespace ForumAPI.Service.Concrete
         }
         private async Task CheckIfUserFavorited(AddQuestionToFavContract addQuestionToFavContract)
         {
-            var favorite = await _favoriteRepository.CheckFavorite(addQuestionToFavContract.QuestionId,addQuestionToFavContract.UserId,true);
-            if(favorite)
-            { throw new ClientSideException("bi kere daha favorilenemz"); }
+            var favorite = await _favoriteRepository.CheckFavorite(addQuestionToFavContract.QuestionId, addQuestionToFavContract.UserId);
+            if (favorite)
+            { throw new ClientSideException("bi kere daha favorilenemez"); }
         }
 
 

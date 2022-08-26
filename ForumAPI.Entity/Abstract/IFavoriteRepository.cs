@@ -9,7 +9,6 @@ namespace ForumAPI.Data.Abstract
 {
     public interface IFavoriteRepository : IGenericRepository<Favorite>
     {
-        Task<bool> CheckFavorite( int questionId , int userId, bool isFiltered);
-        Task<Favorite> GetFavorite( int questionId, int userId );
+        Task<bool> CheckFavorite( int questionId , int userId);
     }
 }

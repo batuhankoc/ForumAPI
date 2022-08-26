@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace ForumAPI.Contract.QuestionContract
 {
-    public class AddQuestionToFavContract
+    public class PaginationResponseContract<T> where T : class 
     {
-        public int UserId { get; set; }
-        public int QuestionId { get; set; }
-        
+        public List<T> Data { get; set; }
+        public PaginationContract Pagination { get; set; }
     }
 }

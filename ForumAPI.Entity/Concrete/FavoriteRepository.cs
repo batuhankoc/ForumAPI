@@ -18,22 +18,13 @@ namespace ForumAPI.Data.Concrete
             _favorite = context.Set<Favorite>();
         }
 
-        public async Task<bool> CheckFavorite(int questionId, int userId, bool filter =false)
+        public async Task<bool> CheckFavorite(int questionId, int userId)
         {
-            if (!filter)
-            {
-                var isFavoritedFiltered = await _favorite.IgnoreQueryFilters().AnyAsync(x => x.UserId == userId && x.QuestionId == questionId);
-                return isFavoritedFiltered;
-
-            }
             var isFavorited = await _favorite.AnyAsync(x => x.UserId == userId && x.QuestionId == questionId);
             return isFavorited;
 
         }
 
-        public async Task<Favorite> GetFavorite(int questionId, int userId)
-        {
-            return await _favorite.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.UserId == userId && x.QuestionId == questionId);
-        }
+       
     }
 }
