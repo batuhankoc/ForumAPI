@@ -9,6 +9,5 @@ namespace ForumAPI.Data.Abstract
 {
     public interface IAnswerRepository : IGenericRepository<Answer>
     {
-       
     }
 }

@@ -27,7 +27,7 @@ namespace ForumAPI.Cache.Concrete
             {
                 return await Get<bool>(cacheKey);
             }
-            bool isFavorite = await _favoriteRepository.CheckFavorite(id, userId, true);
+            bool isFavorite = await _favoriteRepository.CheckFavorite(id, userId);
             if (isFavorite)
                 await Set(cacheKey, isFavorite, TimeSpan.FromMinutes(10));
             else
