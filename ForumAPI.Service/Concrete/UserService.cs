@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ForumAPI.Contract.DeleteContract;
 using ForumAPI.Contract.LoginContract;
 using ForumAPI.Contract.UserContract;
 using ForumAPI.Data.Abstract;
@@ -47,6 +48,13 @@ namespace ForumAPI.Service.Concrete
                 throw new ClientSideException("Wrong password or email");
             }
             return loginmapp;
+        }
+
+        public async Task DeleteUser(DeleteContract deleteContract)
+        {
+            var dbUser = await _userRepository.GetByIdAsync(deleteContract.Id);
+            if(dbUser?.IsDeleted == true) { throw new ClientSideException("Kullanıcı bulunamadı"); };
+            await _userRepository.RemoveAsync(dbUser);
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using FluentValidation.Results;
+using ForumAPI.Contract.DeleteContract;
 using ForumAPI.Contract.QuestionContract;
 using ForumAPI.Contract.ResponseContract;
 using ForumAPI.Service.Abstract;
@@ -25,12 +26,27 @@ namespace ForumAPI.WebAPI.Controllers
             await _questionService.AddQuestionAsync(addQuestionContract);
             return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK)); // null yerine addQuestionContract yazılabilir diye düşündük
         }
-        [HttpGet("[action]")]
-        public async Task<IActionResult> GetAllQuestionsWithDetails()
+        [HttpPost("[action]")]
+        public async Task<IActionResult> GetNewestQuestion(PaginationContract paginationContract)
         {
-            var questions = await _questionService.GetAllQuestionsWithDetails();
+            var questions = await _questionService.GetNewestQuestions(paginationContract);
             return Ok(CustomResponseContract.Success(questions, HttpStatusCode.OK));
         }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> GetQuestionsByDescendingVote(PaginationContract paginationContract)
+        {
+            var questions = await _questionService.GetQuestionsByDescendingVote(paginationContract);
+            return Ok(CustomResponseContract.Success(questions, HttpStatusCode.OK));
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> GetMostAnsweredQuestion(PaginationContract paginationContract)
+        {
+            var questions = await _questionService.GetQuestionsByDescendingAnswer(paginationContract);
+            return Ok(CustomResponseContract.Success(questions, HttpStatusCode.OK));
+        }
+
 
         [HttpPost("[action]")]
         public async Task<IActionResult> AddQuestionToFav(AddQuestionToFavContract addQuestionToFavContract)
@@ -45,6 +61,20 @@ namespace ForumAPI.WebAPI.Controllers
             var questionDetails = await _questionService.GetQuestionsWithDetail(id, userId);
             return Ok(CustomResponseContract.Success(questionDetails, HttpStatusCode.OK));
         }
+        [HttpPost("[action]")]
+        public async Task<IActionResult> DeleteQuestion(DeleteContract deleteContract)
+        {
+            await _questionService.DeleteQuestion(deleteContract);
+            return Ok(CustomResponseContract.Success(null,HttpStatusCode.OK));
+        }
+        [HttpPost("[action]")]
+        public async Task<IActionResult> DeleteFavorite(DeleteContract deleteContract)
+        {
+            await _questionService.DeleteFavorite(deleteContract);
+            return Ok(CustomResponseContract.Success(null, HttpStatusCode.OK));
+        }
+
+
 
     }
 }

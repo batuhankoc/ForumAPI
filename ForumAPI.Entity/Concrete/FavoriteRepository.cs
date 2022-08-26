@@ -20,8 +20,11 @@ namespace ForumAPI.Data.Concrete
 
         public async Task<bool> CheckFavorite(int questionId, int userId)
         {
-            var test= await _favorite.AnyAsync(x => x.UserId == userId && x.QuestionId == questionId);
-            return test;
+            var isFavorited = await _favorite.AnyAsync(x => x.UserId == userId && x.QuestionId == questionId);
+            return isFavorited;
+
         }
+
+       
     }
 }

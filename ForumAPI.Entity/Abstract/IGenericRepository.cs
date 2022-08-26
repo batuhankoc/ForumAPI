@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ForumAPI.Contract;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -14,6 +15,8 @@ namespace ForumAPI.Data.Abstract
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression);
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
-        Task RemoveAsync(T entity);
+        Task UpdateAsync(IContract contract);
+        Task RemoveAsync(T entity, bool hardDelete=false);
+        Task RemoveAsync(object id , bool hardDelete = false);
     }
 }

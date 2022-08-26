@@ -1,4 +1,5 @@
-﻿using ForumAPI.Contract.LoginContract;
+﻿using ForumAPI.Contract.DeleteContract;
+using ForumAPI.Contract.LoginContract;
 using ForumAPI.Contract.UserContract;
 using ForumAPI.Data.Entity;
 using System;
@@ -13,5 +14,6 @@ namespace ForumAPI.Service.Abstract
     {
         Task AddUserAsync(AddUserContract user);
         Task<User> LoginAsync(UserLoginContract login);
+        Task DeleteUser(DeleteContract deleteContract);
     }
 }

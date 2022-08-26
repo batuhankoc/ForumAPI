@@ -21,28 +21,116 @@ namespace ForumAPI.Data.Concrete
             _dbSet = context.Set<Question>();
         }
 
-        public async Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails()
+        public async Task<PaginationResponseContract<GetAllQuestionsContract>> GetNewestQuestions(PaginationContract paginationContract)
         {
-
-            var allQuestions = await _dbSet.AsNoTracking().Select(p => new GetAllQuestionsContract
+            var totalData = await _dbSet.CountAsync();
+            var pageSize = paginationContract.PageSize;
+            var page = paginationContract.Page;
+            var totalPage = Math.Ceiling(Convert.ToDecimal(totalData)/ Convert.ToDecimal(pageSize));
+            var paginationResponseContract = new PaginationResponseContract<GetAllQuestionsContract>
             {
-                Title = p.Title,
-                View = p.QuestionViews.Count(),
-                Content = p.Content,
-                Category = p.Category,
-                Answer = p.Answers.Count(),
-                Vote = p.Votes.Where(y => y.Voted == true).Count() - p.Votes.Where(z => z.Voted == false).Count(),
-                User = new UserResponseContract
-                {
-                    Name = p.User.Name,
-                    Id = p.User.Id,
-                    Surname = p.User.Surname,
-                    Image = p.User.Image
-                }
-            }).ToListAsync();
+               Pagination = new PaginationContract 
+               { 
+                   Page=page,
+                   PageSize=pageSize,
+                   TotalData=totalData,
+                   TotalPage=Convert.ToInt32( totalPage)
 
-            return allQuestions;
+                },
+                Data = await _dbSet.AsNoTracking().OrderByDescending(c => c.Id)
+                 .Skip((page - 1) * pageSize).Take(pageSize).Select(p => new GetAllQuestionsContract
+                 {
+                     Title = p.Title,
+                     View = p.QuestionViews.Count(),
+                     Content = p.Content,
+                     Category = p.Category,
+                     Answer = p.Answers.Count(),
+                     Vote = p.Votes.Where(y => y.Voted == true).Count() - p.Votes.Where(z => z.Voted == false).Count(),
+                     User = new UserResponseContract
+                     {
+                         Name = p.User.Name,
+                         Id = p.User.Id,
+                         Surname = p.User.Surname,
+                         Image = p.User.Image
+                     }
+                 }).ToListAsync()
+            };
+            return paginationResponseContract;
         }
+        public async Task<PaginationResponseContract<GetAllQuestionsContract>> GetQuestionsByDescendingVote (PaginationContract paginationContract)
+        {
+            var totalData = await _dbSet.CountAsync();
+            var pageSize = paginationContract.PageSize;
+            var page = paginationContract.Page;
+            var totalPage = Math.Ceiling(Convert.ToDecimal(totalData)/ Convert.ToDecimal(pageSize));
+            var paginationResponseContract = new PaginationResponseContract<GetAllQuestionsContract>
+            {
+                Pagination = new PaginationContract
+                {
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalData = totalData,
+                    TotalPage = Convert.ToInt32(totalPage)
+
+                },
+                Data = await _dbSet.AsNoTracking().OrderByDescending(c => c.Votes.Where(y => y.Voted == true).Count() - c.Votes.Where(z => z.Voted == false).Count())
+                 .Skip((page - 1) * pageSize).Take(pageSize).Select(p => new GetAllQuestionsContract
+                 {
+                     Title = p.Title,
+                     View = p.QuestionViews.Count(),
+                     Content = p.Content,
+                     Category = p.Category,
+                     Answer = p.Answers.Count(),
+                     Vote = p.Votes.Where(y => y.Voted == true).Count() - p.Votes.Where(z => z.Voted == false).Count(),
+                     User = new UserResponseContract
+                     {
+                         Name = p.User.Name,
+                         Id = p.User.Id,
+                         Surname = p.User.Surname,
+                         Image = p.User.Image
+                     }
+                 }).ToListAsync()
+            };
+            return paginationResponseContract;
+        }
+
+        public async Task<PaginationResponseContract<GetAllQuestionsContract>> GetQuestionsByDescendingAnswer(PaginationContract paginationContract)
+        {
+            var totalData = await _dbSet.CountAsync();
+            var pageSize = paginationContract.PageSize;
+            var page = paginationContract.Page;
+            var totalPage = Math.Ceiling(Convert.ToDecimal(totalData)/ Convert.ToDecimal(pageSize));
+            var paginationResponseContract = new PaginationResponseContract<GetAllQuestionsContract>
+            {
+                Pagination = new PaginationContract
+                {
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalData = totalData,
+                    TotalPage = Convert.ToInt32(totalPage)
+
+                },
+                Data = await _dbSet.AsNoTracking().OrderByDescending(c => c.Answers.Count)
+                 .Skip((page - 1) * pageSize).Take(pageSize).Select(p => new GetAllQuestionsContract
+                 {
+                     Title = p.Title,
+                     View = p.QuestionViews.Count(),
+                     Content = p.Content,
+                     Category = p.Category,
+                     Answer = p.Answers.Count(),
+                     Vote = p.Votes.Where(y => y.Voted == true).Count() - p.Votes.Where(z => z.Voted == false).Count(),
+                     User = new UserResponseContract
+                     {
+                         Name = p.User.Name,
+                         Id = p.User.Id,
+                         Surname = p.User.Surname,
+                         Image = p.User.Image
+                     }
+                 }).ToListAsync()
+            };
+            return paginationResponseContract;
+        }
+
 
         public async Task<QuestionDetailContract> GetQuestionsWithDetail(int id)
         {
@@ -54,7 +142,6 @@ namespace ForumAPI.Data.Concrete
                 Content = p.Content,
                 Category = p.Category,
                 Answer = p.Answers.Count(),
-                //Vote = p.Votes.Where(y => y.Voted == true).Count() - p.Votes.Where(z => z.Voted == false).Count(),
                 User = new UserResponseContract
                 {
                     Name = p.User.Name,
@@ -83,6 +170,7 @@ namespace ForumAPI.Data.Concrete
         }
     }
 }
+
 
 
 

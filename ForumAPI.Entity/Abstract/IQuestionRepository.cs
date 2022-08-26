@@ -10,7 +10,10 @@ namespace ForumAPI.Data.Abstract
 {
     public interface IQuestionRepository : IGenericRepository<Question> 
     {
-        Task<List<GetAllQuestionsContract>> GetAllQuestionsWithDetails();
+        Task<PaginationResponseContract<GetAllQuestionsContract>> GetNewestQuestions(PaginationContract paginationContract);
+        Task<PaginationResponseContract<GetAllQuestionsContract>> GetQuestionsByDescendingVote(PaginationContract paginationContract);
+        Task<PaginationResponseContract<GetAllQuestionsContract>> GetQuestionsByDescendingAnswer(PaginationContract paginationContract);
+
         Task<QuestionDetailContract> GetQuestionsWithDetail(int id);
     }
 }

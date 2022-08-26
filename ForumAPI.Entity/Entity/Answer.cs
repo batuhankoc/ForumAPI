@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ForumAPI.Data.Entity
 {
-    public partial class Answer
+    public partial class Answer : IEntity , ISoftDelete , IHasUpdatedAt
     {
         public int Id { get; set; }
         public int UserId { get; set; }
