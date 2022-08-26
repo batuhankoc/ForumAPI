@@ -11,13 +11,19 @@ using ForumAPI.Service.Mapping;
 using ForumAPI.Validation.FluentValidation;
 using ForumAPI.WebAPI.Middleware;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Exceptions;
+using Serilog.Sinks.Elasticsearch;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+ConfigureLogging();
+builder.Host.UseSerilog();
 
 // Add services to the container.
 
 builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
-    .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter= true);
+    .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
 builder.Services.AddFluentValidation(u => u.RegisterValidatorsFromAssemblyContaining<AddUserContractValidator>());
 builder.Services.AddControllers().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -54,9 +60,7 @@ builder.Services.AddTransient<IRedisCache, RedisCacheManager>();
 builder.Services.AddTransient<IFavoriteCache, FavoriteCache>();
 builder.Services.AddTransient<IQuestionDetailCache, QuestionDetailCache>();
 builder.Services.AddTransient<IVoteCache, VoteCache>();
-
 builder.Services.AddAutoMapper(typeof(MapProfile));
-
 
 
 var app = builder.Build();
@@ -68,12 +72,44 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<RequestResponseLogMiddleware>();
+
 app.UseHttpsRedirection();
 
-app.UseCustomException();
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+void ConfigureLogging()
+{
+    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+    var configuration = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        .AddJsonFile(
+            $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json",
+            optional: true)
+        .Build();
+
+    Log.Logger = new LoggerConfiguration()
+        .Enrich.FromLogContext()
+        .Enrich.WithExceptionDetails()
+        //.WriteTo.Debug()
+        //.WriteTo.Console()
+        .WriteTo.Elasticsearch(ConfigureElasticSink(configuration, environment))
+        .Enrich.WithProperty("Environment", environment)
+        .ReadFrom.Configuration(configuration)
+        .CreateLogger();
+}
+
+ElasticsearchSinkOptions ConfigureElasticSink(IConfigurationRoot configuration, string environment)
+{
+    return new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfiguration:Uri"]))
+    {
+        AutoRegisterTemplate = true,
+        IndexFormat = $"{Assembly.GetExecutingAssembly().GetName().Name.ToLower().Replace(".", "-")}-{environment?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}"
+    };
+}
