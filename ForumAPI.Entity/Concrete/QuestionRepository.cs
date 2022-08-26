@@ -26,7 +26,7 @@ namespace ForumAPI.Data.Concrete
             var totalData = await _dbSet.CountAsync();
             var pageSize = paginationContract.PageSize;
             var page = paginationContract.Page;
-            var totalPage = Convert.ToDecimal(totalData)/ Convert.ToDecimal(pageSize);
+            var totalPage = Math.Ceiling(Convert.ToDecimal(totalData)/ Convert.ToDecimal(pageSize));
             var paginationResponseContract = new PaginationResponseContract<GetAllQuestionsContract>
             {
                Pagination = new PaginationContract 
@@ -62,7 +62,7 @@ namespace ForumAPI.Data.Concrete
             var totalData = await _dbSet.CountAsync();
             var pageSize = paginationContract.PageSize;
             var page = paginationContract.Page;
-            var totalPage = Convert.ToDecimal(totalData) / Convert.ToDecimal(pageSize);
+            var totalPage = Math.Ceiling(Convert.ToDecimal(totalData)/ Convert.ToDecimal(pageSize));
             var paginationResponseContract = new PaginationResponseContract<GetAllQuestionsContract>
             {
                 Pagination = new PaginationContract
@@ -99,7 +99,7 @@ namespace ForumAPI.Data.Concrete
             var totalData = await _dbSet.CountAsync();
             var pageSize = paginationContract.PageSize;
             var page = paginationContract.Page;
-            var totalPage = Convert.ToDecimal(totalData) / Convert.ToDecimal(pageSize);
+            var totalPage = Math.Ceiling(Convert.ToDecimal(totalData)/ Convert.ToDecimal(pageSize));
             var paginationResponseContract = new PaginationResponseContract<GetAllQuestionsContract>
             {
                 Pagination = new PaginationContract
@@ -142,7 +142,6 @@ namespace ForumAPI.Data.Concrete
                 Content = p.Content,
                 Category = p.Category,
                 Answer = p.Answers.Count(),
-                //Vote = p.Votes.Where(y => y.Voted == true).Count() - p.Votes.Where(z => z.Voted == false).Count(),
                 User = new UserResponseContract
                 {
                     Name = p.User.Name,

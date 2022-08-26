@@ -74,25 +74,24 @@ namespace ForumAPI.Service.Concrete
 
         public async Task<PaginationResponseContract<GetAllQuestionsContract>> GetNewestQuestions(PaginationContract paginationContract)
         {
-            var questions = _questionRepository.GetNewestQuestions(paginationContract);
-            if (paginationContract.Page> questions.Result.Pagination.TotalPage)
-            {
-                throw new ClientSideException("sayfada veri yok");
-            }
-            else { return await questions; }
-            
+            var questions = await _questionRepository.GetNewestQuestions(paginationContract);
+            await CheckIfPageExist(paginationContract, questions);
+            return questions;
+
         }
 
         public async Task<PaginationResponseContract<GetAllQuestionsContract>> GetQuestionsByDescendingAnswer(PaginationContract paginationContract)
         {
-            var questions = _questionRepository.GetQuestionsByDescendingAnswer(paginationContract);
-            return await questions;
+            var questions = await _questionRepository.GetQuestionsByDescendingAnswer(paginationContract);
+            await CheckIfPageExist(paginationContract, questions);
+            return questions;
         }
 
         public async Task<PaginationResponseContract<GetAllQuestionsContract>> GetQuestionsByDescendingVote(PaginationContract paginationContract)
         {
-            var questions = _questionRepository.GetQuestionsByDescendingVote(paginationContract);
-            return await questions;
+            var questions = await _questionRepository.GetQuestionsByDescendingVote(paginationContract);
+            await CheckIfPageExist(paginationContract, questions);
+            return questions;
         }
 
         public async Task<QuestionDetailResponseContract> GetQuestionsWithDetail(int id, int userId)
@@ -123,6 +122,13 @@ namespace ForumAPI.Service.Concrete
             var favorite = await _favoriteRepository.CheckFavorite(addQuestionToFavContract.QuestionId, addQuestionToFavContract.UserId);
             if (favorite)
             { throw new ClientSideException("bi kere daha favorilenemez"); }
+        }
+        private async Task CheckIfPageExist(PaginationContract paginationContract, PaginationResponseContract<GetAllQuestionsContract> questions)
+        {
+            if (paginationContract.Page> questions.Pagination.TotalPage)
+            {
+                throw new ClientSideException("sayfada veri yok");
+            }
         }
 
 
