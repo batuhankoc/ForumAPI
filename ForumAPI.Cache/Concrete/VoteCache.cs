@@ -49,9 +49,5 @@ namespace ForumAPI.Cache.Concrete
 
         }
 
-        public Task Remove()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

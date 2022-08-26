@@ -12,6 +12,5 @@ namespace ForumAPI.Cache.Interfaces
     {
         public Task<int> GetNumberOfVotes(int questionId);
         public Task<Vote> GetVote(int questionId, int userId);
-        public Task Remove();
     }
 }
