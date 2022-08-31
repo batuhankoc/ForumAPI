@@ -11,6 +11,6 @@ namespace ForumAPI.Cache.Interfaces
     public interface IQuestionDetailCache : IRedisCache
     {
         public Task<QuestionDetailResponseContract> GetQuestionsWithDetail(int id);
-        public Task Set(object value, TimeSpan timeSpan);
+       
     }
 }

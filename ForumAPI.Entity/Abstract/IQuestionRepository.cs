@@ -14,6 +14,6 @@ namespace ForumAPI.Data.Abstract
         Task<PaginationResponseContract<GetAllQuestionsContract>> GetQuestionsByDescendingVote(PaginationContract paginationContract);
         Task<PaginationResponseContract<GetAllQuestionsContract>> GetQuestionsByDescendingAnswer(PaginationContract paginationContract);
 
-        Task<QuestionDetailContract> GetQuestionsWithDetail(int id);
+        Task<QuestionDetailResponseContract> GetQuestionsWithDetail(int id);
     }
 }

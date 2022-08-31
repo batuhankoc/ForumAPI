@@ -38,7 +38,6 @@ namespace ForumAPI.Data.Concrete
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await Task.FromResult(_dbSet.ToList());
-            // return await _dbSet.ToListAsync(); bu şekilde de çalışıyor neden fromresult kullandık
         }
 
         public async Task<T> GetByIdAsync(object id)

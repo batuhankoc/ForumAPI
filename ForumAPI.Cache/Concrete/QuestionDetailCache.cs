@@ -34,14 +34,8 @@ namespace ForumAPI.Cache.Concrete
                 return questionFromCache;
             }
             var questionDb = await _questionRepository.GetQuestionsWithDetail(id);
-            var mappedQuestion = _mapper.Map<QuestionDetailResponseContract>(questionDb);
-            await Set(cacheKey, mappedQuestion, TimeSpan.FromMinutes(10));
-            return mappedQuestion;
-        }
-
-        public async Task Set(object value, TimeSpan timeSpan)
-        {
-            await Set(CacheKeys.QuestionDetailCacheKey, value, timeSpan);
+            await Set(cacheKey, questionDb, TimeSpan.FromMinutes(10));
+            return questionDb;
         }
     }
 }

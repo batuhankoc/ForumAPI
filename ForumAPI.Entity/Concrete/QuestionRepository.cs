@@ -132,11 +132,10 @@ namespace ForumAPI.Data.Concrete
         }
 
 
-        public async Task<QuestionDetailContract> GetQuestionsWithDetail(int id)
+        public async Task<QuestionDetailResponseContract> GetQuestionsWithDetail(int id)
         {
-            var questionDetail = await _dbSet.Where(x => x.Id == id).Select(p => new QuestionDetailContract
+            var questionDetail = await _dbSet.Where(x => x.Id == id).Select(p => new QuestionDetailResponseContract
             {
-                Id = p.Id,
                 Title = p.Title,
                 View = p.QuestionViews.Count(),
                 Content = p.Content,

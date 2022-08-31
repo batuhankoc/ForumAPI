@@ -24,7 +24,6 @@ namespace ForumAPI.Service.Mapping
             CreateMap<AddQuestionToFavContract, Favorite>().ReverseMap();
             CreateMap<Vote, AddVoteContract>().ReverseMap();
             CreateMap<Question, GetAllQuestionsContract>().ReverseMap();
-            CreateMap<QuestionDetailContract, QuestionDetailResponseContract>().ReverseMap();
         }
 
     }
